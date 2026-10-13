@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Física 2, Unidad 1: campo y potencial</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head><body>
+<main>
+<h1>Simulador de campo eléctrico y potencial</h1>
+<p class="s">Producto final de Física 2. Cálculos en Python (Flask, NumPy, SciPy). Unidad 1: electricidad, campo eléctrico y potencial eléctrico.</p>
+<div class="grp" role="tablist"><span>Unidad 1: campo y potencial</span>
+<button class="tab" role="tab" data-t="t1">Visualizador de cargas</button>
+<button class="tab" role="tab" data-t="t2">Calculadora de potencial</button>
+<button class="tab" role="tab" data-t="t3">Trayectoria de partícula</button></div>
+
+
+<section id="t1" class="card"><h2>Visualizador de cargas puntuales (hasta 10)</h2>
+<div class="row">
+<label><input type="radio" name="md" value="mv" checked> Mover</label>
+<label><input type="radio" name="md" value="ap"> Agregar +</label>
+<label><input type="radio" name="md" value="an"> Agregar −</label>
+<label><input type="radio" name="md" value="del"> Borrar</label>
+<label>Carga nueva <input type="range" id="qv" min="1" max="8" value="3"> <b id="qvl">3 nC</b></label></div>
+<div class="row">
+<label><input type="checkbox" id="fl" checked> Líneas de campo</label>
+<label><input type="checkbox" id="eq" checked> Equipotenciales</label>
+<label>Cada <select id="dv"><option>2</option><option selected>5</option><option>10</option><option>20</option></select> V</label>
+<button class="g" data-p="dip">Dipolo</button><button class="g" data-p="cua">Cuadrupolo</button><button class="g" data-p="iw">Dos iguales</button><button class="g" data-p="clr">Limpiar</button></div>
+<canvas id="cv" width="640" height="440" aria-label="Campo eléctrico de cargas puntuales"></canvas>
+<div class="out"><div><span>Cursor (m)</span><strong id="p0">—</strong></div><div><span>Potencial V</span><strong id="p1">—</strong></div><div><span>Campo |E|</span><strong id="p2">—</strong></div><div><span>Cargas</span><strong id="p3">2 / 10</strong></div></div>
+<details><summary>Fundamento físico</summary><pre>Ley de Coulomb: E = k·q/r² (dirección radial), k = 8,99×10⁹ N·m²/C²
+Superposición: E total = Σ Eᵢ  y  V total = Σ k·qᵢ/rᵢ
+Las líneas de campo salen de las cargas + y llegan a las −; son perpendiculares a las equipotenciales.
+Algoritmo: las líneas se integran paso a paso (0,02 m) siguiendo la dirección de E; las equipotenciales marcan las celdas donde V es múltiplo del intervalo elegido.</pre></details></section>
+
+<section id="t2" class="card" hidden><h2>Calculadora de potencial eléctrico</h2>
+<p class="s">Usa las mismas cargas del visualizador. Edita carga (nC) y posición (m), y elige el punto de cálculo.</p>
+<div id="tb"></div>
+<div class="row"><button class="g" id="addc">Agregar carga</button>
+<label>Punto x (m) <input type="number" id="cx" value="3.2" step="0.1"></label>
+<label>y (m) <input type="number" id="cy" value="3.4" step="0.1"></label></div>
+<div class="out" id="co"></div><pre id="cd" style="margin-top:10px"></pre>
+<details><summary>Fundamento físico</summary><pre>V = Σ k·qᵢ/rᵢ, con rᵢ = distancia entre la carga i y el punto.
+El potencial es un escalar, se suma directamente. El campo se obtiene sumando vectores Ex, Ey de cada carga.</pre></details></section>
+
+<section id="t3" class="card" hidden><h2>Simulador de trayectoria en campo eléctrico uniforme</h2>
+<div class="row">
+<label>q (µC) <input type="number" id="tq" value="1" step="0.5"></label>
+<label>m (mg) <input type="number" id="tm" value="1" step="0.5" min="0.01"></label>
+<label>Eₓ (V/m) <input type="number" id="tex" value="5"></label>
+<label>E_y (V/m) <input type="number" id="tey" value="-20"></label></div>
+<div class="row">
+<label>v₀ (m/s) <input type="number" id="tv" value="15"></label>
+<label>Ángulo (°) <input type="number" id="ta" value="40"></label>
+<label>Tiempo máx (s) <input type="number" id="tT" value="3" step="0.5" min="0.1"></label>
+<label><input type="checkbox" id="tg"> Gravedad</label>
+<label><input type="checkbox" id="ts" checked> Parar al volver a y = 0</label>
+<button class="b" id="go">Lanzar</button></div>
+<canvas id="ct" width="640" height="380" aria-label="Trayectoria de la partícula"></canvas>
+<div class="out" id="to"></div>
+<details><summary>Fundamento físico y validación</summary><pre>Segunda ley de Newton: a = q·E/m (más g si se activa la gravedad). Con q en µC y m en mg, a = q·E/m sale directo en m/s².
+Método numérico: Runge-Kutta de 4.º orden con paso 1 ms.
+Validación 1: se compara con la solución exacta x = x₀ + vt + ½at².
+Validación 2: teorema trabajo-energía, W = m·a·Δr debe igualar ΔK = ½m(v² − v₀²).</pre></details></section>
+
+
+
+
+</main>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body></html>
