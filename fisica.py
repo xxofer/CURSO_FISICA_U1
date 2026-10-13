@@ -1,6 +1,3 @@
-"""Núcleo físico de la Unidad 1: campo eléctrico, potencial y trayectoria.
-Unidades: cargas en nC, distancias en m, V en voltios, E en V/m.
-Con q en nC, k·q = 8.99 V·m por cada nC, por eso K = 8.99."""
 import numpy as np
 from scipy.integrate import solve_ivp
 
@@ -9,13 +6,12 @@ MAX_CARGAS = 10
 
 
 def campo(cargas, X, Y):
-    """Devuelve (Ex, Ey, V) en los puntos (X, Y). cargas = [(q_nC, x, y), ...]"""
     X = np.asarray(X, float)
     Y = np.asarray(Y, float)
     Ex, Ey, V = np.zeros_like(X), np.zeros_like(X), np.zeros_like(X)
     for q, x0, y0 in cargas:
         dx, dy = X - x0, Y - y0
-        r2 = dx * dx + dy * dy + 1e-6          # evita dividir por cero
+        r2 = dx * dx + dy * dy + 1e-6          
         r = np.sqrt(r2)
         V += K * q / r
         Ex += K * q * dx / (r2 * r)
@@ -24,7 +20,6 @@ def campo(cargas, X, Y):
 
 
 def potencial_en_punto(cargas, x, y):
-    """V, Ex, Ey y el desglose por carga en el punto (x, y)."""
     Ex, Ey, V = campo(cargas, x, y)
     desglose = []
     for i, (q, x0, y0) in enumerate(cargas, 1):
@@ -55,7 +50,7 @@ def trayectoria(q=1.0, m=1.0, ex=5.0, ey=-20.0, v0=15.0, ang=40.0, T=3.0, graved
     tf = float(sol.t[-1])
     t = np.linspace(0, tf, n)
     x, y, vx, vy = sol.sol(t)
-    xe, ye = vx0 * tf + 0.5 * ax * tf ** 2, vy0 * tf + 0.5 * ay * tf ** 2     # solución exacta
+    xe, ye = vx0 * tf + 0.5 * ax * tf ** 2, vy0 * tf + 0.5 * ay * tf ** 2     
     vf = float(np.hypot(vx[-1], vy[-1]))
     return {"t_vuelo": tf, "alcance": float(x[-1]), "h_max": float(y.max()), "v_final": vf, "ax": ax, "ay": ay,
             "dK": float(0.5 * m * (vf ** 2 - v0 ** 2)), "W": float(m * (ax * x[-1] + ay * y[-1])),
