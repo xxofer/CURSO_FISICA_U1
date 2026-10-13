@@ -1,5 +1,4 @@
-/* Interfaz de la Unidad 1. El visualizador se dibuja en el navegador (para que arrastrar cargas sea fluido);
-   la calculadora de potencial y la trayectoria se calculan en Python (ver app.py y fisica.py). */
+
 const $=i=>document.getElementById(i),K=8.99,E0=8.854e-12;
 const css=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 const eng=(x,u)=>{if(!isFinite(x))return'—';if(x===0)return'0 '+u;const p=[[1e-12,'p'],[1e-9,'n'],[1e-6,'µ'],[1e-3,'m'],[1,''],[1e3,'k'],[1e6,'M'],[1e9,'G']];let a=Math.abs(x),c=p[0];for(const q of p)if(a>=q[0])c=q;return(+(x/c[0]).toPrecision(4))+' '+c[1]+u};
@@ -9,12 +8,10 @@ const post=async(u,b)=>{try{const r=await fetch(u,{method:'POST',headers:{'Conte
 let ch=[{x:2.2,y:2.2,q:3},{x:4.2,y:2.2,q:-3}];
 const F=(x,y)=>{let ex=0,ey=0,v=0;for(const c of ch){const dx=x-c.x,dy=y-c.y,r2=dx*dx+dy*dy+1e-6,r=Math.sqrt(r2);v+=K*c.q/r;const e=K*c.q/(r2*r);ex+=e*dx;ey+=e*dy}return[ex,ey,v]};
 
-/* Tabs */
 const upd={t1:()=>draw(),t2:()=>{renderT();calc()},t3:()=>launch()};
 function show(id){document.querySelectorAll('section').forEach(s=>s.hidden=s.id!==id);document.querySelectorAll('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.t===id));upd[id]()}
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>show(b.dataset.t));
 
-/* Unidad 1: visualizador */
 const cv=$('cv'),g=cv.getContext('2d'),W=640,H=440,S=100,px=x=>x*S,py=y=>H-y*S;
 function draw(){
  const ink=css('--ink'),pos=css('--pos'),neg=css('--neg');
@@ -46,7 +43,6 @@ $('qv').oninput=()=>$('qvl').textContent=$('qv').value+' nC';
 document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=b.dataset.p;
  ch=p==='dip'?[{x:2.2,y:2.2,q:3},{x:4.2,y:2.2,q:-3}]:p==='cua'?[{x:2.7,y:1.7,q:3},{x:3.7,y:1.7,q:-3},{x:3.7,y:2.7,q:3},{x:2.7,y:2.7,q:-3}]:p==='iw'?[{x:2.4,y:2.2,q:3},{x:4,y:2.2,q:3}]:[];draw()});
 
-/* Unidad 1: calculadora de potencial */
 function renderT(){$('tb').innerHTML=ch.map((c,i)=>`<div class="cr"><b>Q${i+1}</b><input type="number" step="any" value="${c.q}" data-i="${i}" data-k="q" aria-label="Carga ${i+1} en nC"> nC <input type="number" step="0.1" value="${+c.x.toFixed(2)}" data-i="${i}" data-k="x" aria-label="x"> x <input type="number" step="0.1" value="${+c.y.toFixed(2)}" data-i="${i}" data-k="y" aria-label="y"> y <button class="g" data-del="${i}" aria-label="Quitar carga ${i+1}">Quitar</button></div>`).join('')||'<p class="s">Sin cargas. Agrega una.</p>';
  $('tb').querySelectorAll('input').forEach(n=>n.oninput=()=>{ch[n.dataset.i][n.dataset.k]=+n.value;calc()});
  $('tb').querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{ch.splice(+b.dataset.del,1);renderT();calc()})}
@@ -59,7 +55,6 @@ async function calc(){const x=+$('cx').value,y=+$('cy').value;
  outs('co',[['Potencial V',eng(r.V,'V')],['Eₓ',eng(r.Ex,'V/m')],['E_y',eng(r.Ey,'V/m')],['|E|',eng(r.E,'V/m')],['Dirección de E',num(r.angulo,1)+'°']]);
  $('cd').textContent=r.desglose.map(d=>`Q${d.i} = ${d.q} nC, r = ${num(d.r,3)} m, V = ${d.V===null?'—':eng(d.V,'V')}`).join('\n')+`\nSuma = ${eng(r.V,'V')}`}
 
-/* Unidad 1: trayectoria */
 let tr=null,an=0;const ct=$('ct'),t=ct.getContext('2d');
 async function launch(){
  const p={q:+$('tq').value,m:+$('tm').value,ex:+$('tex').value,ey:+$('tey').value,v0:+$('tv').value,ang:+$('ta').value,T:+$('tT').value,gravedad:$('tg').checked,parar:$('ts').checked};
